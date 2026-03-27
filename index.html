@@ -77,6 +77,13 @@
     textarea {
       resize: none;
     }
+
+    #successMsg {
+      margin-top: 10px;
+      color: #2ecc71;
+      font-weight: bold;
+      display: none;
+    }
   </style>
 </head>
 
@@ -98,6 +105,8 @@
   <textarea id="comment" placeholder="Your feedback..."></textarea><br>
   <button onclick="submitComment()">Submit</button>
 
+  <div id="successMsg">✅ Feedback received. Thank you!</div>
+
   <p style="margin-top:15px; font-size:12px; opacity:0.8;">
     – Imesh Pathirana<br>
     Assistant Lecturer
@@ -114,7 +123,7 @@ const SHEET_URL = "https://opensheet.elk.sh/1s4yNOENtViTOkcHeJbGrfL1bBl3sPIHW94_
 let studentsData = [];
 
 async function loadData() {
-  document.getElementById("title").innerText = "Loading student data...";
+  document.getElementById("title").innerText = "Loading...";
   
   const res = await fetch(SHEET_URL);
   studentsData = await res.json();
@@ -149,10 +158,10 @@ function getStudent() {
 }
 
 /* =========================
-   COMMENT SUBMISSION
+   COMMENT SUBMISSION (INSTANT)
 ========================= */
 
-async function submitComment() {
+function submitComment() {
   const comment = document.getElementById("comment").value;
   const id = document.getElementById("studentId").value;
 
@@ -161,7 +170,14 @@ async function submitComment() {
     return;
   }
 
-  await fetch("https://script.google.com/macros/s/AKfycbxQoI5dmydnPDxL5fY6FnRmdlsSj8Sl7T6f9TUd7f-XWcjZFFEGCVNeF3bbOAPzayfI/exec", {
+  // Show success instantly
+  document.getElementById("successMsg").style.display = "block";
+
+  // Clear textarea
+  document.getElementById("comment").value = "";
+
+  // Send in background (no waiting)
+  fetch("https://script.google.com/macros/s/AKfycbxQoI5dmydnPDxL5fY6FnRmdlsSj8Sl7T6f9TUd7f-XWcjZFFEGCVNeF3bbOAPzayfI/exec", {
     method: "POST",
     mode: "no-cors",
     headers: {
@@ -169,8 +185,6 @@ async function submitComment() {
     },
     body: JSON.stringify({ id: id, comment: comment }),
   });
-
-  alert("Thank you for your feedback!");
 }
 
 /* =========================
