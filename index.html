@@ -77,7 +77,7 @@ async function submitComment() {
   const comment = document.getElementById("comment").value;
   const id = document.getElementById("studentId").value;
 
-  await fetch("https://script.google.com/macros/s/AKfycby4AZfDxTzxyDzB7A1phj3be4fwqSQvGdC5kUCX8Z_vp5WnJtYM8VQaPGOXOhx9Qb9q/exec", {
+  await fetch("https://script.google.com/macros/s/AKfycbyjj7dg0zHeEK5A7EVOpryIMYAe_3Fj7kUbZswRtaz1AVH4oe3EqIBTk9KOGAdo1TpK/exec", {
     method: "POST",
     mode: "no-cors",
     body: JSON.stringify({ id, comment }),
