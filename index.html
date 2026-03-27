@@ -22,10 +22,11 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      pointer-events: none; /* 🔥 FIX: allows clicking inputs */
     }
 
-    /* Ensure content is above animation */
-    body > * {
+    /* Keep UI above animation */
+    body > *:not(#bgCanvas) {
       position: relative;
       z-index: 1;
     }
@@ -107,7 +108,7 @@
 
 <script>
 /* =========================
-   STUDENT FETCH LOGIC
+   STUDENT FETCH
 ========================= */
 
 const SHEET_URL = "https://opensheet.elk.sh/1s4yNOENtViTOkcHeJbGrfL1bBl3sPIHW94_W55fxxG0/Sheet1";
@@ -184,7 +185,7 @@ for (let i = 0; i < 40; i++) {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw connections
+  // Connections
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       let dx = nodes[i].x - nodes[j].x;
@@ -201,7 +202,7 @@ function draw() {
     }
   }
 
-  // Draw nodes
+  // Nodes
   nodes.forEach(node => {
     ctx.beginPath();
     ctx.arc(node.x, node.y, 3, 0, Math.PI * 2);
