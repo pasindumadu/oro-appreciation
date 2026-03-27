@@ -79,6 +79,7 @@ async function submitComment() {
 
   await fetch("https://script.google.com/macros/s/AKfycby4AZfDxTzxyDzB7A1phj3be4fwqSQvGdC5kUCX8Z_vp5WnJtYM8VQaPGOXOhx9Qb9q/exec", {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({ id, comment }),
   });
 
