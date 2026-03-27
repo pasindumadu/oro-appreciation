@@ -14,7 +14,6 @@
       overflow-x: hidden;
     }
 
-    /* Canvas background */
     #bgCanvas {
       position: fixed;
       top: 0;
@@ -25,7 +24,6 @@
       pointer-events: none;
     }
 
-    /* Ensure UI is clickable */
     body > *:not(#bgCanvas) {
       position: relative;
       z-index: 1;
@@ -86,7 +84,7 @@
 
 <canvas id="bgCanvas"></canvas>
 
-<h2>🎓 Operational Research & Optimization<br>Appreciation</h2>
+<h2 id="title">🎓 Operational Research & Optimization<br>Appreciation</h2>
 
 <input type="text" id="studentId" placeholder="Enter your University ID">
 <br>
@@ -101,25 +99,40 @@
   <button onclick="submitComment()">Submit</button>
 
   <p style="margin-top:15px; font-size:12px; opacity:0.8;">
-    – Pasindu Madhuranga<br>
-    Lecturer, School of Computing, IIT
+    – Imesh Pathirana<br>
+    Assistant Lecturer
   </p>
 </div>
 
 <script>
 /* =========================
-   STUDENT FETCH (FIXED)
+   PRELOAD DATA (FAST ⚡)
 ========================= */
 
 const SHEET_URL = "https://opensheet.elk.sh/1s4yNOENtViTOkcHeJbGrfL1bBl3sPIHW94_W55fxxG0/Sheet1";
 
-async function getStudent() {
+let studentsData = [];
+
+async function loadData() {
+  document.getElementById("title").innerText = "Loading student data...";
+  
+  const res = await fetch(SHEET_URL);
+  studentsData = await res.json();
+
+  document.getElementById("title").innerHTML =
+    "🎓 Operational Research & Optimization<br>Appreciation";
+}
+
+loadData();
+
+/* =========================
+   STUDENT FETCH (INSTANT)
+========================= */
+
+function getStudent() {
   const id = document.getElementById("studentId").value;
 
-  const res = await fetch(SHEET_URL);
-  const data = await res.json();
-
-  const student = data.find(row => 
+  const student = studentsData.find(row => 
     String(row.ID).replace(/\s+/g, '').toLowerCase() === 
     id.replace(/\s+/g, '').toLowerCase()
   );
@@ -180,15 +193,14 @@ for (let i = 0; i < 40; i++) {
   nodes.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    dx: (Math.random() - 0.5) * 1,
-    dy: (Math.random() - 0.5) * 1
+    dx: (Math.random() - 0.5),
+    dy: (Math.random() - 0.5)
   });
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw connections
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       let dx = nodes[i].x - nodes[j].x;
@@ -205,7 +217,6 @@ function draw() {
     }
   }
 
-  // Draw nodes
   nodes.forEach(node => {
     ctx.beginPath();
     ctx.arc(node.x, node.y, 3, 0, Math.PI * 2);
