@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ORO Appreciation</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 40px;
+      background: #f5f5f5;
+    }
+    input, button, textarea {
+      padding: 10px;
+      margin: 10px;
+      width: 260px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #2c3e50;
+      color: white;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      display: none;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<h2>🎓 ORO Module Appreciation</h2>
+
+<input type="text" id="studentId" placeholder="Enter your University ID">
+<br>
+<button onclick="getStudent()">View Message</button>
+
+<div id="result">
+  <h3 id="name"></h3>
+  <p id="message"></p>
+
+  <h4>💬 Leave a comment</h4>
+  <textarea id="comment" placeholder="Your feedback..."></textarea><br>
+  <button onclick="submitComment()">Submit</button>
+</div>
+
+<script>
+const SHEET_URL = "https://opensheet.elk.sh/YOUR_SHEET_ID/Sheet1";
+
+async function getStudent() {
+  const id = document.getElementById("studentId").value.trim();
+
+  const res = await fetch(SHEET_URL);
+  const data = await res.json();
+
+  const student = data.find(row => row.ID === id);
+
+  if (student) {
+    document.getElementById("name").innerText = `Hi ${student.Name} 👋`;
+    document.getElementById("message").innerText =
+      "Thank you for your active participation and dedication throughout the ORO module. Your effort, engagement, and willingness to learn were truly appreciated. Wishing you all the best for your future!";
+    
+    document.getElementById("result").style.display = "block";
+  } else {
+    alert("ID not found");
+  }
+}
+
+async function submitComment() {
+  const comment = document.getElementById("comment").value;
+  const id = document.getElementById("studentId").value;
+
+  await fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify({ id, comment }),
+  });
+
+  alert("Thank you for your feedback!");
+}
+</script>
+
+</body>
+</html>
