@@ -3,15 +3,17 @@
 <head>
   <title>ORO Appreciation</title>
 
+  <!-- 🔥 IMPORTANT FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
       margin: 0;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: #ecf0f1;
-      overflow-x: hidden;
     }
 
     #bgCanvas {
@@ -30,18 +32,25 @@
     }
 
     h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
+      font-size: 22px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
     }
 
     input, button, textarea {
-      padding: 12px;
-      margin: 10px;
-      width: 260px;
-      border-radius: 8px;
+      padding: 14px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 10px;
       border: none;
       outline: none;
-      font-size: 14px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
 
     input, textarea {
@@ -54,24 +63,21 @@
       color: white;
       cursor: pointer;
       transition: 0.3s;
+      font-weight: bold;
     }
 
     button:hover {
       background: #16a085;
-      transform: scale(1.05);
     }
 
     #result {
-      margin-top: 25px;
+      margin-top: 20px;
       background: rgba(255, 255, 255, 0.1);
-      padding: 25px;
+      padding: 20px;
       border-radius: 15px;
-      display: none;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
       backdrop-filter: blur(10px);
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      display: none;
     }
 
     textarea {
@@ -84,6 +90,12 @@
       font-weight: bold;
       display: none;
     }
+
+    @media (min-width: 768px) {
+      h2 {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 
@@ -91,52 +103,45 @@
 
 <canvas id="bgCanvas"></canvas>
 
-<h2 id="title">🎓 Operational Research & Optimization<br>Appreciation</h2>
+<div class="container">
 
-<input type="text" id="studentId" placeholder="Enter your University ID">
-<br>
-<button onclick="getStudent()">View Message</button>
+  <h2 id="title">🎓 Operational Research & Optimization<br>Appreciation</h2>
 
-<div id="result">
-  <h3 id="name"></h3>
-  <p id="message"></p>
+  <input type="text" id="studentId" placeholder="Enter your University ID">
+  
+  <button onclick="getStudent()">View Message</button>
 
-  <h4>💬 Leave a comment</h4>
-  <textarea id="comment" placeholder="Your feedback..."></textarea><br>
-  <button onclick="submitComment()">Submit</button>
+  <div id="result">
+    <h3 id="name"></h3>
+    <p id="message"></p>
 
-  <div id="successMsg">✅ Feedback received. Thank you!</div>
+    <h4>💬 Leave a comment</h4>
+    <textarea id="comment" placeholder="Your feedback..."></textarea>
+    <button onclick="submitComment()">Submit</button>
 
-  <p style="margin-top:15px; font-size:12px; opacity:0.8;">
-    – Pasindu Madhuranga<br>
-    Lecturer, School of Computing, IIT
-  </p>
+    <div id="successMsg">✅ Feedback received. Thank you!</div>
+
+    <p style="margin-top:15px; font-size:12px; opacity:0.8;">
+      – Pasindu Madhuranga<br>
+      Lecturer, School of Computing, IIT.
+    </p>
+  </div>
+
 </div>
 
 <script>
-/* =========================
-   PRELOAD DATA (FAST ⚡)
-========================= */
-
 const SHEET_URL = "https://opensheet.elk.sh/1s4yNOENtViTOkcHeJbGrfL1bBl3sPIHW94_W55fxxG0/Sheet1";
 
 let studentsData = [];
 
 async function loadData() {
   document.getElementById("title").innerText = "Loading...";
-  
   const res = await fetch(SHEET_URL);
   studentsData = await res.json();
-
   document.getElementById("title").innerHTML =
     "🎓 Operational Research & Optimization<br>Appreciation";
 }
-
 loadData();
-
-/* =========================
-   STUDENT FETCH (INSTANT)
-========================= */
 
 function getStudent() {
   const id = document.getElementById("studentId").value;
@@ -157,10 +162,6 @@ function getStudent() {
   }
 }
 
-/* =========================
-   COMMENT SUBMISSION (INSTANT)
-========================= */
-
 function submitComment() {
   const comment = document.getElementById("comment").value;
   const id = document.getElementById("studentId").value;
@@ -170,13 +171,9 @@ function submitComment() {
     return;
   }
 
-  // Show success instantly
   document.getElementById("successMsg").style.display = "block";
-
-  // Clear textarea
   document.getElementById("comment").value = "";
 
-  // Send in background (no waiting)
   fetch("https://script.google.com/macros/s/AKfycbxQoI5dmydnPDxL5fY6FnRmdlsSj8Sl7T6f9TUd7f-XWcjZFFEGCVNeF3bbOAPzayfI/exec", {
     method: "POST",
     mode: "no-cors",
@@ -187,10 +184,7 @@ function submitComment() {
   });
 }
 
-/* =========================
-   ANIMATED OR BACKGROUND
-========================= */
-
+/* Mobile-optimized animation */
 const canvas = document.getElementById("bgCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -201,9 +195,11 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-let nodes = [];
+/* Reduce nodes on mobile for performance */
+let nodeCount = window.innerWidth < 600 ? 20 : 40;
 
-for (let i = 0; i < 40; i++) {
+let nodes = [];
+for (let i = 0; i < nodeCount; i++) {
   nodes.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -221,9 +217,9 @@ function draw() {
       let dy = nodes[i].y - nodes[j].y;
       let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < 120) {
+      if (dist < 100) {
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(26, 188, 156, 0.2)";
+        ctx.strokeStyle = "rgba(26, 188, 156, 0.15)";
         ctx.moveTo(nodes[i].x, nodes[i].y);
         ctx.lineTo(nodes[j].x, nodes[j].y);
         ctx.stroke();
@@ -233,7 +229,7 @@ function draw() {
 
   nodes.forEach(node => {
     ctx.beginPath();
-    ctx.arc(node.x, node.y, 3, 0, Math.PI * 2);
+    ctx.arc(node.x, node.y, 2.5, 0, Math.PI * 2);
     ctx.fillStyle = "#1abc9c";
     ctx.fill();
 
